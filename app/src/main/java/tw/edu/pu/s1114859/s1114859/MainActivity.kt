@@ -1,5 +1,7 @@
 package tw.edu.pu.s1114859.s1114859
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,7 +12,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -31,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -126,9 +132,76 @@ fun SecondScreen(navController: NavController){
     }
 }
 @Composable
-fun OtherScreen(navController: NavController){
-    Text(text = "主要機構",color= Color.Red)
+fun OtherScreen(navController: NavController) {
+    val context = LocalContext.current
+    Column {
+        Text(text = "主要機構", color = Color.Red)
+        Row {
+            Button(onClick = {
+            }) {
+                Text(text = "台中愛心家園")
+            }
+            Button(onClick = {navController.navigate("JumpForth")
+            }) {
+                Text(text = "瑪利亞學園")
+            }
+        }
+        Box {
+            Text(
+                text = "[台中市愛心家園]經市政府公開評選後，委託瑪利亞基金會經營管理，於91年啟用，整棟建築物" +
+                        "有四個樓層，目前開辦就醫、就養、就學、就業四大領域的實向業務，提供身心障礙者全方位的服務。"
+            )
+        }
+        Text(text = "長按以下圖片，可以觀看瑪利亞學園地圖", color = Color.Blue )
+        Image(painter = painterResource(id = R.drawable.lovehome), contentDescription ="愛心家園",
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit){
+                    detectTapGestures(
+                        onLongPress = {var it= Intent(Intent.ACTION_VIEW)
+                            it.data= Uri.parse("geo:0,0?q=台中市愛心家園")
+                            context.startActivity(it)
+                        }
+                    )
+                })
+    }
 }
+@Composable
+fun fourScreen(navController: NavController){
+    val context = LocalContext.current
+    Column {
+        Text(text = "主要機構", color = Color.Red)
+        Row {
+            Button(onClick = {navController.navigate("JumpOther")
+            }) {
+                Text(text = "台中愛心家園")
+            }
+            Button(onClick = {navController.navigate("JumpForth")
+            }) {
+                Text(text = "瑪利亞學園")
+            }
+        }
+        Box {
+            Text(
+                text = "[瑪利亞學園]提供重度以及極重度多重障礙者日間照顧服務，以健康照護為基礎，支持生活多面向參予極學習概念，輔助發展重度身心障礙者自我概念為最終服務目的"
+            )
+        }
+        Text(text = "雙擊以下圖片，可以觀看瑪利亞學園地圖", color = Color.Blue)
+        Image(painter = painterResource(id = R.drawable.campus), contentDescription ="瑪利亞學園",
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit){
+                    detectTapGestures(
+                        onDoubleTap = {var it= Intent(Intent.ACTION_VIEW)
+                            it.data= Uri.parse("geo:0,0?q=瑪利亞學園")
+                            context.startActivity(it)
+
+                        }
+                    )
+                })
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main(){
@@ -169,7 +242,10 @@ fun Main(){
             composable("JumpOther"){
                 OtherScreen(navController = navController)
             }
+            composable("JumpForth"){
+                fourScreen(navController = navController)
+            }
+
         }
     }
 }
-
