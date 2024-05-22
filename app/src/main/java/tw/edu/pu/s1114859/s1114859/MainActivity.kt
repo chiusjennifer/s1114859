@@ -60,18 +60,75 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FirstScreen(navController: NavController){
-    Column {
-        Text(text = "簡介",color= Color.Blue)
+    var appear by remember { mutableStateOf(true) }
+    Column(modifier = Modifier
+        .fillMaxSize()) {
+        Text(text = "瑪利亞基金會服務總覽", color = Color.Blue)
+        AnimatedVisibility(
+            visible = appear,
+            enter = fadeIn(
+                initialAlpha = 0.1f,
+                animationSpec = tween(1000))
+
+                    + slideInVertically(
+                animationSpec = tween(durationMillis = 5000)){ fullHeight ->
+                fullHeight/3
+            },
+            exit=fadeOut(
+                animationSpec = tween(durationMillis = 5000))
+                    + slideOutVertically(
+                animationSpec = tween(durationMillis = 5000)){fullHeight ->
+                fullHeight/3
+            }
+        ) {
+            Image(painter = painterResource(id = R.drawable.service), contentDescription = "服務")
+        }
+
+        Button(onClick = {
+            navController.navigate("JumpSecond")
+        }) {
+            Text(text = "作者:資傳系邱家妤")
+        }
     }
 }
 
 @Composable
 fun SecondScreen(navController: NavController){
-    Column {
-        Text(text = "主要機構", color = Color.Red)
+    val context = LocalContext.current
+    var appear by remember { mutableStateOf(true) }
+    Column(modifier = Modifier
+        .fillMaxSize()) {
+        Text(text = "關於APP作者", color = Color.Blue)
+        AnimatedVisibility(
+            visible = appear,
+            enter= fadeIn(
+                initialAlpha = 0.1f,
+                animationSpec = tween(durationMillis = 5000))
+                    + slideInVertically(
+                animationSpec = tween(durationMillis = 5000)){ fullHeight ->
+                fullHeight/3
+            },
+            exit = fadeOut(
+                animationSpec = tween(durationMillis = 5000))
+                    + slideOutVertically(
+                animationSpec = tween(durationMillis = 5000)){fullHeight ->
+                fullHeight/3
+            }
+        ) {
+            Image(painter = painterResource(id = R.drawable.chiusjennifer), contentDescription = "人像")
+        }
+
+        Button(onClick = {
+            navController.navigate("JumpFirst")
+        }) {
+            Text(text = "服務總覽")
+        }
     }
 }
-
+@Composable
+fun OtherScreen(navController: NavController){
+    Text(text = "主要機構",color= Color.Red)
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main(){
@@ -79,7 +136,7 @@ fun Main(){
     val context= LocalContext.current
     var showMenu by remember{ mutableStateOf(false) }
     Column {
-        TopAppBar(title = { Image(painter = painterResource(id = R.drawable.maria), contentDescription ="logo" ) },
+        TopAppBar(title = { Image(painter = painterResource(id = R.drawable.maria), contentDescription ="logo" )},
             actions = {
                 IconButton(
                     onClick = { showMenu = true }
@@ -96,7 +153,7 @@ fun Main(){
 
                     DropdownMenuItem(
                         text = { Text("主要機構") },
-                        onClick = { navController.navigate("JumpSecond")})
+                        onClick = { navController.navigate("JumpOther")})
                 }
 
 
@@ -108,6 +165,9 @@ fun Main(){
             }
             composable("JumpSecond"){
                 SecondScreen(navController=navController)
+            }
+            composable("JumpOther"){
+                OtherScreen(navController = navController)
             }
         }
     }
